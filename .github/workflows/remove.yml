@@ -10,6 +10,7 @@ permissions:
 jobs:
   remove_label:
     runs-on: ubuntu-latest
+    if: contains(github.event.issue.labels.*.name, 'system')
     steps:
       - uses: actions/github-script@v5
         with:
