@@ -1,0 +1,5 @@
+system1:
+- systems/system1/**/*
+
+system2:
+- any: ['systems/system2/**/*']
