@@ -1,0 +1,26 @@
+name: "Remove label"
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  remove_label:
+    if: startsWith(github.event.pull_request.labels.*.name, 'system')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v5
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const res = github.rest.issues.removeLabel({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: '${{ github.event.pull_request.labels.*.name }}'
+            })
+            console.log(res.data. res.status)
+            if (res.status !== 200) {
+              console.error(JSON.stringify(res, null, '  '))
+              throw new Error('API Error')
+            }
