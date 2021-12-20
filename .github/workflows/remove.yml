@@ -9,19 +9,17 @@ permissions:
 
 jobs:
   remove_label:
-    # if: startsWith(github.event.pull_request.labels.*.name, 'system')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/github-script@v5
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            console.log('label jso', ${{ toJSON(github.event.pull_request.labels) }})
             const labels = ${{ toJSON(github.event.pull_request.labels) }}
             const label = labels.find(label => label.name.startsWith('system'))
-            console.log('label', label)
-            if (label) {
-
+            if (!label) {
+              console.log('not found target label')
+              return
             }
             const res = await github.rest.issues.removeLabel({
               issue_number: context.issue.number,
@@ -29,4 +27,7 @@ jobs:
               repo: context.repo.repo,
               name: label.name
             })
-            console.log(res)
+            if (res.status !== 200) {
+              console.error(JSON.stringify(res, null, '  '))
+              throw new Error('API Error')
+            }
