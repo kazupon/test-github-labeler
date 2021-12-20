@@ -17,12 +17,17 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             console.log('label jso', ${{ toJSON(github.event.pull_request.labels) }})
-            console.log('label', '${{ github.event.pull_request.labels.*.name }}')
+            const labels = ${{ toJSON(github.event.pull_request.labels) }}
+            const label = labels.find(label => label.name.startsWith('system'))
+            console.log('label', label)
+            if (label) {
+
+            }
             const res = await github.rest.issues.removeLabel({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              name: '${{ github.event.pull_request.labels.*.name }}'
+              name: label.name
             })
             console.log(res.data. res.status)
             if (res.status !== 200) {
