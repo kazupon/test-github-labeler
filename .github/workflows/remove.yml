@@ -29,8 +29,4 @@ jobs:
               repo: context.repo.repo,
               name: label.name
             })
-            console.log(res.data. res.status)
-            if (res.status !== 200) {
-              console.error(JSON.stringify(res, null, '  '))
-              throw new Error('API Error')
-            }
+            console.log(res)
